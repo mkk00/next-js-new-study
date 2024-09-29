@@ -69,3 +69,35 @@ export default function Home() {
 ```
 
 <br/>
+
+## Layout 컴포넌트
+
+- Next.js 의 전반적인 레이아웃을 나타내는 컴포넌트로 루트 디렉토리(app)에 최소 1개는 꼭 필요하다.
+- 페이지별로 layout.js 을 정의할 수 있다.
+- 컴포넌트 명은 정해진 것은 아니다.
+
+```javascript
+export default function RootLayout({ children }) {
+  return (
+    <html lang="ko">
+      <body>{children}</body>
+    </html>
+  )
+}
+```
+
+### 레이아웃 컴포넌트에 head 태그가 없는 이유
+
+- metadata 에 의해 설정
+- Next.js로 인해 자동으로 설정
+
+```javascript
+export const metadata = {
+  title: 'NextJS Study',
+  description: 'my NextJS study!',
+}
+```
+
+### children
+
+현재 활성된 페이지의 pages.js 파일
