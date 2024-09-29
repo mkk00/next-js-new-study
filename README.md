@@ -1,3 +1,3 @@
 # Next.js Study
 
-- [App router](./next-first-app/README.md)
+- [App router 기초](https://github.com/mkk00/next-js-new-study/tree/main/next-first-app)
