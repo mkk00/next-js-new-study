@@ -4,6 +4,16 @@ Next.js 는 SSR을 지원한다.
 SSR은 서버에서 HTML을 생성하여 클라이언트로 전송하는 방식이다.
 하지만 Next.js 는 SSR만 사용하는 것이 아니라 CSR 및 SSG도 함께 사용할 수 있다.
 
+1. [서버 컴포넌트 이해하기](#서버-컴포넌트-이해하기)
+2. [Next.js의 라우팅](#nextjs의-라우팅)
+3. [Layout 컴포넌트](#layout-컴포넌트)
+4. [보호된 파일명](#보호된-파일명)
+5. [동적 라우팅(dynamic routes)](#동적-라우팅dynamic-routes)
+   - [params prop](#params-prop)
+   - [Generating Static Params](#generating-static-params)
+   - [catch all segments](#catch-all-segments)
+   - [typescript params 타입](#typescript-params-타입)
+
 ## 서버 컴포넌트 이해하기
 
 Next.js의 컴포넌트는 **서버 컴포넌트**이기 때문에 클라이언트 사이드에서 실행되는 코드를 입력하면 작동하지 않는다.<br/>
@@ -26,6 +36,8 @@ export async function getServerSideProps() {
 }
 ```
 
+<br/>
+
 ## Next.js의 라우팅
 
 ## `<Link>` 컴포넌트 VS `<a>` 태그
@@ -42,6 +54,7 @@ export async function getServerSideProps() {
 a 태그를 사용하여 링크 이동 시 Next.js의 장점을 따르지 못한다.
 
 \*\* 브라우저의 새로고침 버튼을 눌러보면 순간적으로 `X` 로 변경되는데, 이는 서버 사이드 렌더링으로 매번 새로운 페이지를 불러온다는 것이다.
+
 <br/>
 
 ### Link 컴포넌트 사용 시
@@ -86,6 +99,8 @@ export default function RootLayout({ children }) {
 }
 ```
 
+<br/>
+
 ### 레이아웃 컴포넌트에 head 태그가 없는 이유
 
 - metadata 에 의해 설정
@@ -102,6 +117,8 @@ export const metadata = {
 
 현재 활성된 페이지의 pages.js 파일
 
+<br/>
+
 ## 보호된 파일명
 
 `layout.js`, `page.js`, `icon.png`(파비콘) 와 같은 파일은 Next.js 프로젝트를 구성하는 데 자동으로 이용된다.
@@ -115,3 +132,98 @@ Next.js가 `components` 와 같은 폴더명은 app 폴더 내부에서 **라우
 - `error.js` : 기타 에러 폴백 페이지
 - `loading.js`
 - `route.js` : API 경로 생성(데이터 반환 페이지)
+
+<br/>
+
+## 동적 라우팅(dynamic routes)
+
+동적 라우팅 시 정확한 세그먼트 이름을 모르거나, **동적 데이터**로부터 라우트를 만들 때 동적 세그먼트를 사용한다.
+
+동적 세그먼트는 대괄호를 붙여서 만들 수 있다.<br/>
+
+ex. `[id]`, `[slug]`
+
+- `app/blog/[slug]/page.js` : 동일한 page.js 파일이지만, 다른 경로 분할값이 생성된다.
+
+- `slog` 식별자는 경로에 값이 할당될 때 정확한 값에 접근할 수 있도록 해준다.
+
+### params prop
+
+동적 세그먼트는 layout, page, route, generateMetadata 함수로부터 `params prop`을 전달받는다.
+
+```javascript
+export default function Page({ params }) {
+  return <div>My Post: {params.slug}</div>
+}
+```
+
+| route                     | url       | `params`        |
+| ------------------------- | --------- | --------------- |
+| `app/blog/[slug]/page.js` | `/blog/a` | `{ slug: 'a' }` |
+| `app/blog/[slug]/page.js` | `/blog/b` | `{ slug: 'b' }` |
+| `app/blog/[slug]/page.js` | `/blog/c` | `{ slug: 'c' }` |
+
+<br/>
+
+### Generating Static Params
+
+`generateStaticParams` 함수는 **정적 경로를 생성**하는데 사용된다.
+이 함수는 빌드 시에 동적 라우트를 미리 생성하여 경로를 미리 준비한다.
+
+- 빠른 탐색
+- 정적 페이지 제공
+  - 미리 생성되면 서버 리소스를 덜 사용한다.
+- 자동 메모이제이션을 통한 성능 향상
+  - 메모이제이션을 통해 동일한 요청에 대해 한 번만 함수를 실행한다.
+
+```javascript
+export async function generateStaticParams() {
+  const posts = await fetch('https://.../posts').then((res) => res.json())
+
+  return posts.map((post) => ({
+    slug: post.slug,
+  }))
+}
+```
+
+<br/>
+
+### Catch-all Segments
+
+- 특정 경로의 **모든 하위 경로를 매칭**할 수 있게 해주는 기능으로 대괄호에 `...`을 추가하여 구현할 수 있다.(`[...slug]`)
+  <br/>
+- `app/shop/[...slog]/page.js` 는 `/shop/clothes` 뿐만 아니라 `/shop/tops`, `/shop/clothes/t-shirts` 등에도 일치한다.
+  <br/>
+
+| route                        | url           | `params`                    |
+| ---------------------------- | ------------- | --------------------------- |
+| `app/blog/[...slug]/page.js` | `/blog/a`     | `{ slug: ['a'] }`           |
+| `app/blog/[...slug]/page.js` | `/blog/a/b`   | `{ slug: ['a', 'b'] }`      |
+| `app/blog/[...slug]/page.js` | `/blog/a/b/c` | `{ slug: ['a', 'b', 'c'] }` |
+
+<br/>
+
+### Optional Catch-all Segments
+
+- 특정 경로의 **선택적으로 매칭**할 수 있게 해주는 기능으로 대괄호 안에 ...를 포함한 대괄호로 구현할 수 있다.(`[[...slug]]`)
+  <br/>
+- 매개변수 없이도 경로가 일치한다. (`/blog`)
+  <br/>
+
+| route                          | url           | `params`                    |
+| ------------------------------ | ------------- | --------------------------- |
+| `app/blog/[[...slug]]/page.js` | `/blog`       | `{}`                        |
+| `app/blog/[[...slug]]/page.js` | `/blog/a`     | `{ slug: ['a'] }`           |
+| `app/blog/[[...slug]]/page.js` | `/blog/a/b`   | `{ slug: ['a', 'b'] }`      |
+| `app/blog/[[...slug]]/page.js` | `/blog/a/b/c` | `{ slug: ['a', 'b', 'c'] }` |
+
+<br/>
+
+### typescript params 타입
+
+| route                               | type                                     |
+| ----------------------------------- | ---------------------------------------- |
+| `app/blog/[slug]/page.js`           | `{ slug: string }`                       |
+| `app/shop/[...slug]/page.js`        | `{ slug: string[] }`                     |
+| `app/shop/[[...slug]]/page.js`      | `{ slug?: string[] }`                    |
+| `app/[categoryId]/[itemId]/page.js` | `{ categoryId: string, itemId: string }` |
