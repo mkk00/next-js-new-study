@@ -34,7 +34,9 @@ export default function RootLayout({
             ></path>
           </svg>
         </div>
-        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+        <main>
+          <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+        </main>
       </body>
     </html>
   )

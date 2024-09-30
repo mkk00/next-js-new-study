@@ -41,6 +41,12 @@ const GlobalStyle = createGlobalStyle`
     margin: 3rem auto;
   }
 
+  h2 {
+    font-size: 2rem;
+    color: #fff;
+    margin-top: 5rem;
+  }
+
   .not-found,
   .error {
     margin-top: 5rem;
