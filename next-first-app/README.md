@@ -101,3 +101,17 @@ export const metadata = {
 ### children
 
 현재 활성된 페이지의 pages.js 파일
+
+## 보호된 파일명
+
+`layout.js`, `page.js`, `icon.png`(파비콘) 와 같은 파일은 Next.js 프로젝트를 구성하는 데 자동으로 이용된다.
+Next.js가 `components` 와 같은 폴더명은 app 폴더 내부에서 **라우팅에 관여하지 못하도록** 자동으로 처리해준다.
+
+### app 폴더 내부에서 생성될 때 보호되는 파일명들
+
+- `page.js`
+- `layout.js`
+- `not-found.js`
+- `error.js` : 기타 에러 폴백 페이지
+- `loading.js`
+- `route.js` : API 경로 생성(데이터 반환 페이지)
