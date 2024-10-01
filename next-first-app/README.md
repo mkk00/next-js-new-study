@@ -119,6 +119,23 @@ export const metadata = {
 
 <br/>
 
+### 중첩 레이아웃
+
+특정 페이지에 레이아웃이 있으면 루트 레이아웃과 중첩된다. 즉, 루트 레이아웃은 항상 활성화된다.
+
+```javascript
+export default function MealsLayout({ children }) {
+  return (
+    <>
+      <p>Meals layout</p>
+      {children}
+    </>
+  )
+}
+```
+
+<br/>
+
 ## 보호된 파일명
 
 `layout.js`, `page.js`, `icon.png`(파비콘) 와 같은 파일은 Next.js 프로젝트를 구성하는 데 자동으로 이용된다.
