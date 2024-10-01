@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
-import StyledComponentsRegistry from '../lib/registry'
+import StyledComponentsRegistry from '@/lib/registry'
+import MainHeader from '@/components/main-header'
 
 export const metadata: Metadata = {
   title: 'NextLevel Food',
@@ -34,6 +35,7 @@ export default function RootLayout({
             ></path>
           </svg>
         </div>
+        <MainHeader />
         <main>
           <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
         </main>
