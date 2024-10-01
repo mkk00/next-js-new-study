@@ -10,6 +10,9 @@ export default function Home() {
         • <Link href="/meals">Go Meals Page!</Link>
       </p>
       <p>
+        • <Link href="/meals/share">Go share page</Link>
+      </p>
+      <p>
         • <Link href="/community">Go Community Page!</Link>
       </p>
     </>
